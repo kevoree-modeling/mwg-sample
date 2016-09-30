@@ -11,7 +11,6 @@ public class Client {
     public static void main(String[] args) {
         Graph g = new GraphBuilder()
                 .withMemorySize(10000) //cache size before sync to disk
-                .saveEvery(10) //every 100 value sync memory and disk automatically
                 .withStorage(new WSClient("ws://127.0.0.1:8050"))
                 .build();
         g.connect(isConnected -> {
@@ -26,9 +25,12 @@ public class Client {
                         for (Node sensorNow : allSensorsNow) {
                             System.out.println("\t" + sensorNow.toString());
                         }
+                        g.disconnect(result -> System.out.println("GoodBye!"));
                     });
                 });
             });
+
+
 
         });
     }

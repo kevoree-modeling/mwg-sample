@@ -18,8 +18,6 @@ public class Storage {
 
         Graph g = new GraphBuilder()
                 .withMemorySize(10000) //cache size before sync to disk
-                .saveEvery(10) //every 100 value sync memory and disk automatically
-                .withOffHeapMemory() //optional, use cache highly efficient for Java GC
                 .withStorage(new LevelDBStorage("mwg_db"))
                 .build();
         g.connect(isConnected -> {
