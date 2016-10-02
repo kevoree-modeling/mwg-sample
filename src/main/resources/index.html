@@ -113,8 +113,8 @@
                         graphics: graphics,
                         container: container
                     });
-                    /*
-                    graphics.placeNode(function(ui, pos) {
+
+                    graphics.placeNode(function (ui, pos) {
                         var domPos = {
                             x: pos.x,
                             y: pos.y
@@ -124,7 +124,7 @@
                         var labelStyle = domLabels[nodeId].style;
                         labelStyle.left = domPos.x + 'px';
                         labelStyle.top = domPos.y + 'px';
-                    });*/
+                    });
                     renderer.run();
 
                     $("#graphContainer").resize(function () {
@@ -135,7 +135,6 @@
                     ctx.continueTask();
                 });
 
-        /*
         $("#timeSelector").change(function (evt) {
             var selectedTime = evt.target.value;
             //reset
@@ -145,7 +144,7 @@
             };
             generateGraphJSON.executeWith(mwg, selectedTime, null);
         });
-        */
+
     });
 
 </script>
