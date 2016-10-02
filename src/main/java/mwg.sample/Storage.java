@@ -32,6 +32,7 @@ public class Storage {
                         for (Node sensorNow : allSensorsNow) {
                             System.out.println("\t" + sensorNow.toString());
                         }
+
                     });
                 });
             });
