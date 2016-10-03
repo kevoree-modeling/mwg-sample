@@ -60,6 +60,7 @@
             var label = document.createElement('span');
             label.classList.add('node-label');
             label.innerText = node.data;
+            label.innerText = '';
             labels[node.id] = label;
             container.appendChild(label);
         });
@@ -92,6 +93,7 @@
                 })
                 .traverse("sensors")
                 .then(function (ctx) {
+                    console.log("--- called ---")
                     var container = document.getElementById("graphContainer");
                     container.innerHTML = "";
                     var vivagraph = ctx.variable("vivagraph").get(0);
@@ -125,6 +127,20 @@
                         labelStyle.left = domPos.x + 'px';
                         labelStyle.top = domPos.y + 'px';
                     });
+
+                    var events = Viva.Graph.webglInputEvents(graphics, vivagraph);
+                    events.mouseEnter(function (node) {
+                        // cleaning everything, otherwise you can miss events
+                        vivagraph.forEachNode(function (n) {
+                            domLabels[n.id].innerText = '';
+                        });
+                        domLabels[node.id].innerText = node.data;
+                    }).mouseLeave(function (node) {
+                        domLabels[node.id].innerText = '';
+                    });
+
+
+
                     renderer.run();
 
                     $("#graphContainer").resize(function () {
@@ -134,6 +150,7 @@
                     });
                     ctx.continueTask();
                 });
+
 
         $("#timeSelector").change(function (evt) {
             var selectedTime = evt.target.value;
