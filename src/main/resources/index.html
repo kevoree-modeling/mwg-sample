@@ -9,9 +9,11 @@
     <script src="js/jquery-3.1.1.js"></script>
     <script src="js/vivagraph.js"></script>
     <script src="js/goldenlayout.js"></script>
+    <script src="js/vis.js"></script>
 
     <link type="text/css" rel="stylesheet" href="css/goldenlayout-base.css"/>
     <link type="text/css" rel="stylesheet" href="css/goldenlayout-dark-theme.css"/>
+    <link type="text/css" rel="stylesheet" href="css/vis.css"/>
 
     <style>
         .node-label {
@@ -31,8 +33,8 @@
             type: 'column',
             content: [{
                 type: 'component',
-                height: 25,
-                componentName: 'timeJumper',
+                height: 35,
+                componentName: 'timeSlider',
                 isClosable: false
             }, {
                 type: 'component',
@@ -42,9 +44,13 @@
         }]
     };
     var myLayout = new GoldenLayout(config);
-    myLayout.registerComponent('timeJumper', function (container, componentState) {
-        container.getElement().html('<input id="timeSelector" class="slider-input" value="0"/>');
+    //    myLayout.registerComponent('timeJumper', function (container, componentState) {
+    //        container.getElement().html('<input id="timeSelector" class="slider-input" value="0"/>');
+    //    });
+    myLayout.registerComponent('timeSlider', function (container, componentState) {
+        container.getElement().html('<div id="timeSliderContainer"></div>');
     });
+
     myLayout.registerComponent('graphViewer', function (container, componentState) {
         container.getElement().html('<div id="graphContainer" style="width: 100%; height: 100%;"></div>');
     });
@@ -52,6 +58,7 @@
 </script>
 
 <script>
+
 
     function generateDOMLabels(graph) {
         var container = document.getElementById("graphContainer");
@@ -70,6 +77,50 @@
     var mwg = new org.mwg.GraphBuilder().withStorage(new org.mwg.plugin.WSClient("ws://localhost:8081")).build();
     mwg.connect(function (connectionResult) {
         console.log("connected:", connectionResult);
+
+        // todo replace by constants max/min time
+        mwg.getIndexNode(0, 2475568118218, "rooms", function (ctx) {
+            ctx.timepoints(0, 2475568118218, function(timepoints) {
+                for(var i = 0; i < timepoints.length; i++) {
+                    var beginDate = new Date(2016, 9, 1);
+                    var endDate = new Date(2016, 12, 1);
+                    var maxDate = new Date(2018, 0, 1);
+
+                    // DOM element where the Timeline will be attached
+                    var container = document.getElementById('timeSliderContainer');
+
+                    var data = new vis.DataSet();
+                    for (var i = 0; i < 99; i++) {
+                        data.add([
+                            {
+                                id: i,
+                                start: new Date(timepoints[i]),
+                                type: 'point'
+                            }
+                        ]);
+                    }
+                    // Configuration for the Timeline
+                    var options = {
+                        showCurrentTime: false,
+                        start: beginDate,
+                        end: endDate,
+                        min: beginDate,
+                        max: maxDate,
+                        zoomable: false,
+                    };
+
+                    // Create a Timeline
+                    var timeline = new vis.Timeline(container, data, options);
+                    timeline.addCustomTime(beginDate);
+
+                    timeline.on('timechanged', function (properties) {
+                        generateGraphJSON.executeWith(mwg, timeline.getCustomTime().getTime(), null);
+                    });
+                }
+            });
+        });
+
+
         var generateGraphJSON = org.mwg.task.Actions.setTime("{{result}}")
                 .then(function (ctx) {
                     var g = Viva.Graph.graph();
@@ -93,7 +144,6 @@
                 })
                 .traverse("sensors")
                 .then(function (ctx) {
-                    console.log("--- called ---")
                     var container = document.getElementById("graphContainer");
                     container.innerHTML = "";
                     var vivagraph = ctx.variable("vivagraph").get(0);
@@ -140,7 +190,6 @@
                     });
 
 
-
                     renderer.run();
 
                     $("#graphContainer").resize(function () {
@@ -152,15 +201,11 @@
                 });
 
 
-        $("#timeSelector").change(function (evt) {
-            var selectedTime = evt.target.value;
-            //reset
-            graphJSON = {
-                "nodes": [],
-                "edges": []
-            };
-            generateGraphJSON.executeWith(mwg, selectedTime, null);
-        });
+//        // A $( document ).ready() block.
+//        $(document).ready(function () {
+//
+//
+//        });
 
     });
 
