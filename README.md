@@ -1,6 +1,9 @@
 # Many World graph: samples
 This project contains minimalist but easy to hack mwg samples.
 These samples highlights features implemented in Core, Core JS and the various plugins.
+This small project gices hints about temporal graphs illustrated as follow:
+
+![demo](demo.gif)
 
 ## 0: pom.xml
 This project define the classic way to import mwg in your code using maven.
