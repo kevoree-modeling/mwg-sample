@@ -30,13 +30,13 @@ public class Temporal {
                 room0.jump(System.currentTimeMillis(), room0now -> {
                     System.out.println("RoomNow:");
                     room0now.rel("sensors", sensorsNow -> {
-                        for(Node sensorNow : sensorsNow){
-                            System.out.println("\t"+sensorNow.toString());
+                        for (Node sensorNow : sensorsNow) {
+                            System.out.println("\t" + sensorNow.toString());
                         }
+                        //free !!!
+                        g.freeNodes(sensorsNow);
                     });
                 });
-
-
             });
 
         });

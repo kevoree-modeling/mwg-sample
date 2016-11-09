@@ -34,7 +34,7 @@ public class App {
         Graph g = new GraphBuilder()
                 .withStorage(new LevelDBStorage("mwg_sample_db"))
                 .withPlugin(new MLPlugin())
-                .withPlugin(new VerbosePlugin())
+              //  .withPlugin(new VerbosePlugin())
                 .build();
         //connect the newly created graph
         g.connect(connectionResult -> {
@@ -42,12 +42,12 @@ public class App {
             new WSServer(g, MWG_PORT).start();
 
             inject(startDate).asGlobalVar("startDate").
-            loop("0", "99",
-                    math("startDate + i * 86400000 - (i % 2) * 43200000").asGlobalVar("time").
+                    loop("0", "99",
+                            math("startDate + i * 86400000 - (i % 2) * 43200000").asGlobalVar("time").
 //                    setTime("{{i}}").subTask(findOrCreateRoom)
-                    setTime("{{time}}").subTask(findOrCreateRoom)
+        setTime("{{time}}").subTask(findOrCreateRoom)
 
-            ).save().execute(g, null);
+                    ).save().execute(g, null);
 
         });
     }
