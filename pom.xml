@@ -6,7 +6,7 @@
     <version>1-SNAPSHOT</version>
 
     <properties>
-        <mwg.version>9</mwg.version>
+        <mwg.version>10</mwg.version>
     </properties>
 
     <dependencies>
